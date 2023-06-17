@@ -1,9 +1,11 @@
 import tkinter as tk
+from abc import ABC
+from ui import UI
 
 
-class GuiHandler:
+class GUI(UI, ABC):
     def __init__(self, board):
-        self.board = board
+        super().__init__(board)
         self.window = tk.Tk()
 
     def draw_board(self):

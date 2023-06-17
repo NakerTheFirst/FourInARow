@@ -1,19 +1,6 @@
 class Board:
     def __init__(self):
         self.grid = [['o' for _ in range(9)] for _ in range(6)]
-        self.gui_handler = None  # Set in Engine initialiser
-
-    def display(self):
-        pass
-
-    def display_console(self):
-        """Developer tool: display the board in console"""
-        print()
-        for row in range(6):
-            for col in range(9):
-                print(self.grid[row][col], end=" ")
-            print()
-        print()
 
     def place_piece(self, column, symbol):
         for row in reversed(self.grid):
@@ -30,8 +17,8 @@ class Board:
 
     def is_full(self):
         for col in range(9):
-            if not self.is_column_full(col):  # If any column is not full
-                return False  # The board is not full
+            if not self.is_column_full(col):
+                return False
         return True
 
     def check_win(self):

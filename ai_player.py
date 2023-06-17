@@ -8,6 +8,6 @@ class AIPlayer(Player):
 
     def choose_column(self, board):
         while True:
-            column = random.randint(0, 8)  # Choose a random column
-            if not board.is_column_full(column):  # If the column is not full
-                return column  # Return the chosen column
+            column = random.randint(0, 8)
+            if not board.is_column_full(column):
+                return column

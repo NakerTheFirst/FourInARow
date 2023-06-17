@@ -1,7 +1,7 @@
-from abc import abstractmethod, ABCMeta
+from abc import abstractmethod, ABC
 
 
-class Player(metaclass=ABCMeta):
+class Player(ABC):
     def __init__(self, name, symbol):
         self.name = name
         self.symbol = symbol

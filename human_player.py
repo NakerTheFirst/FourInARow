@@ -8,7 +8,7 @@ class HumanPlayer(Player):
     def choose_column(self, board):
         while True:
             column = input(f"{self.name}, choose a column to place your piece (0-8): ")
-            if column.isdigit() and 0 <= int(column) <= 8:  # Check if the input is a valid column number
+            if column.isdigit() and 0 <= int(column) <= 8:
                 return int(column)
             else:
                 print("Invalid input. Please enter a number between 0 and 8.")
