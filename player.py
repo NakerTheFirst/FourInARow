@@ -7,5 +7,5 @@ class Player(metaclass=ABCMeta):
         self.symbol = symbol
 
     @abstractmethod
-    def choose_column(self):
+    def choose_column(self, board):
         pass
