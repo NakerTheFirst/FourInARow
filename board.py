@@ -7,6 +7,7 @@ class Board:
         self.grid = [['o' for _ in range(9)] for _ in range(6)]
         self.players = self.choose_players()
         self.current_player = 0
+        self.is_game_over = False
 
     @staticmethod
     def choose_players():
@@ -37,7 +38,7 @@ class Board:
                 return False
         return True
 
-    def is_full(self):
+    def is_board_full(self):
         for col in range(9):
             if not self.is_column_full(col):
                 return False

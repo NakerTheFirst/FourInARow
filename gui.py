@@ -2,8 +2,6 @@ import tkinter as tk
 from abc import ABC
 from ui import UI
 
-# TODO: Update text based on current player
-# TODO: Add game logic to GUI
 # TODO: Add class diagram
 # TODO: Add docs
 # TODO: Update methods' and attributes' access specifiers
@@ -16,7 +14,8 @@ class GUI(UI, ABC):
         self.bottom_frame = tk.Frame(self.root, width=640, height=115, bg="#4C4246")
         self.orb_columns = []
         self.orbs = []
-        self.text = "Player 1, click a column to place your piece"
+        self.text = tk.StringVar()
+        self.text.set("Player 1, click a column to place your piece")
         self.textbox_frame = None
         self.text_info = None
 
@@ -40,10 +39,7 @@ class GUI(UI, ABC):
         self.textbox_frame.pack(pady=36)
         self.textbox_frame.grid_propagate(False)
 
-        string_var = tk.StringVar()
-        string_var.set(text)
-
-        self.text_info = tk.Label(self.textbox_frame, textvariable=string_var, font=("Ubuntu", -12), bg="#237373", fg="#FFF")
+        self.text_info = tk.Label(self.textbox_frame, textvariable=self.text, font=("Ubuntu", -12), bg="#237373", fg="#FFF")
         self.text_info.grid(sticky="nsew", padx=10, pady=10)
         self.textbox_frame.columnconfigure(0, weight=1)
         self.textbox_frame.rowconfigure(0, weight=1)
@@ -70,14 +66,24 @@ class GUI(UI, ABC):
 
     def handle_click(self, column):
         def _handle_click(event):
-            for row in reversed(range(6)):
-                if self.board.grid[row][column] == "o":
-                    self.board.grid[row][column] = self.board.players[self.board.current_player].symbol
-                    self.change_orb_colour(column, row, self.get_orb_colour())
-                    self.change_textbox_colour()
-                    self.board.switch_player()
-                    # self.board.check_win()
-                    break
+            if not self.board.is_game_over:
+                if self.board.is_column_full(column):
+                    self.text.set(f"Column {column} is full. Please choose another column.")
+                else:
+                    for row in reversed(range(6)):
+                        if self.board.grid[row][column] == "o":
+                            self.board.grid[row][column] = self.board.players[self.board.current_player].symbol
+                            self.change_orb_colour(column, row, self.get_orb_colour())
+                            self.change_textbox_colour()
+
+                            if self.board.check_win():
+                                self.text.set(f"{self.board.players[self.board.current_player].name} wins!")
+                                self.board.is_game_over = True
+                            else:
+                                self.board.switch_player()
+                                self.update_textbox_text()
+
+                            break
         return _handle_click
 
     def change_orb_colour(self, column, row, colour):
@@ -94,3 +100,7 @@ class GUI(UI, ABC):
 
     def get_textbox_colour(self):
         return "#237373" if self.board.current_player else "#CD5334"
+
+    def update_textbox_text(self):
+        player_name = self.board.players[self.board.current_player].name
+        self.text.set(f"{player_name}, click a column to place your piece")
