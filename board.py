@@ -12,11 +12,11 @@ class Board:
     @staticmethod
     def choose_players():
         while True:
-            choice = input("Choose your opponent ('human' or 'ai'): ")
+            choice = input("Choose your opponent 'human' or 'ai': ")
             if choice.lower() == 'human':
                 return [HumanPlayer('Player 1', '1'), HumanPlayer('Player 2', '2')]
             elif choice.lower() == 'ai':
-                return [HumanPlayer('Player 1', '1'), AIPlayer('Player 2', '2')]
+                return [HumanPlayer('Player 1', '1'), AIPlayer('AI', '2')]
             else:
                 print("Invalid input. Please enter 'human' or 'ai'.")
 

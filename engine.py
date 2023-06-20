@@ -9,7 +9,7 @@ class Engine:
         self.ui = self.choose_interface()
 
     def play(self):
-        # Console interface
+        # Initialise Console Interface
         if isinstance(self.ui, ConsoleInterface):
             is_over = False
             while not is_over:
@@ -35,7 +35,7 @@ class Engine:
                 else:
                     self.board.switch_player()
 
-        # Graphical User Interface
+        # Initialise GUI
         elif isinstance(self.ui, GUI):
             self.ui.display()
 

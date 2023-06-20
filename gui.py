@@ -1,8 +1,10 @@
+from numpy import random
 import tkinter as tk
 from abc import ABC
+from ai_player import AIPlayer
 from ui import UI
 
-# TODO: Add AI game mode
+# TODO: Modularise the methods, reduce the spaghetti level
 # TODO: Add class diagram
 # TODO: Add docs
 # TODO: Update methods' and attributes' access specifiers
@@ -19,6 +21,7 @@ class GUI(UI, ABC):
         self.text.set(f"{self.board.players[self.board.current_player].name}, click a column to place your piece")
         self.textbox_frame = None
         self.text_info = None
+        self.waiting_for_ai = False
 
     def display(self):
         """The draw everything method"""
@@ -67,7 +70,7 @@ class GUI(UI, ABC):
 
     def handle_click(self, column):
         def _handle_click(event):
-            if not self.board.is_game_over:
+            if not self.board.is_game_over and not isinstance(self.board.players[self.board.current_player], AIPlayer):
                 if self.board.is_column_full(column):
                     self.text.set(f"Column {column} is full. Please choose another column.")
                 else:
@@ -85,6 +88,8 @@ class GUI(UI, ABC):
 
                             self.change_textbox_colour()
                             break
+            if not self.board.is_game_over and isinstance(self.board.players[self.board.current_player], AIPlayer):
+                self.root.after(random.randint(1000, 2500), self.make_ai_move)
 
         return _handle_click
 
@@ -102,4 +107,26 @@ class GUI(UI, ABC):
 
     def update_textbox_text(self):
         player_name = self.board.players[self.board.current_player].name
-        self.text.set(f"{player_name}, click a column to place your piece")
+        if player_name != 'AI':
+            self.text.set(f"{player_name}, click a column to place your piece")
+        else:
+            self.text.set(f"{player_name} is taking its turn")
+
+    def make_ai_move(self):
+        if isinstance(self.board.players[1], AIPlayer):
+            while True:
+                column = self.board.players[1].choose_column(self.board)
+                if not self.board.is_column_full(column):
+                    break
+            for row in reversed(range(6)):
+                if self.board.grid[row][column] == "o":
+                    self.board.grid[row][column] = self.board.players[1].symbol
+                    self.change_orb_colour(column, row, self.get_orb_colour())
+                    if self.board.check_win():
+                        self.text.set(f"{self.board.players[1].name} wins!")
+                        self.board.is_game_over = True
+                    else:
+                        self.board.switch_player()
+                        self.update_textbox_text()
+                    self.change_textbox_colour()
+                    break
