@@ -1,6 +1,28 @@
+from human_player import HumanPlayer
+from ai_player import AIPlayer
+
+
 class Board:
     def __init__(self):
         self.grid = [['o' for _ in range(9)] for _ in range(6)]
+        self.players = self.choose_players()
+        self.current_player = 0
+
+    @staticmethod
+    def choose_players():
+        while True:
+            # choice = input("Choose your opponent ('human' or 'ai'): ")
+            # Temporarily set choice to human in all cases for testing, delete line later
+            choice = 'human'
+            if choice.lower() == 'human':
+                return [HumanPlayer('Player 1', '1'), HumanPlayer('Player 2', '2')]
+            elif choice.lower() == 'ai':
+                return [HumanPlayer('Player 1', '1'), AIPlayer('Player 2', '2')]
+            else:
+                print("Invalid input. Please enter 'human' or 'ai'.")
+
+    def switch_player(self):
+        self.current_player = 1 - self.current_player
 
     def place_piece(self, column, symbol):
         for row in reversed(self.grid):

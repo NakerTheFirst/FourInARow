@@ -1,66 +1,51 @@
-from ai_player import AIPlayer
-from board import Board
 from console_interface import ConsoleInterface
 from gui import GUI
-from human_player import HumanPlayer
+from board import Board
 
 
 class Engine:
     def __init__(self):
-        self.players = [HumanPlayer('Player 1', '1'), AIPlayer('Player 2', '2')]
         self.board = Board()
-        self.current_player = 0
-        self.ui = None
+        self.ui = self.choose_interface()
 
     def play(self):
-        self.choose_interface()
-        self.choose_players()
-        is_over = False
-        while not is_over:
-            player = self.players[self.current_player]
+        # Console interface
+        if isinstance(self.ui, ConsoleInterface):
+            is_over = False
+            while not is_over:
+                player = self.board.players[self.board.current_player]
+                self.ui.display()
+
+                while True:
+                    column = player.choose_column(self.board)
+                    if not self.board.is_column_full(column):
+                        break
+                    print(f"Column {column} is full. Please choose another column.")
+                self.board.place_piece(column, player.symbol)
+
+                # Win/draw checks
+                if self.board.check_win():
+                    is_over = True
+                    self.ui.display()
+                    print(f"{player.name} wins!")
+                elif self.board.is_full():
+                    is_over = True
+                    self.ui.display()
+                    print("It's a draw!")
+                else:
+                    self.board.switch_player()
+
+        # Graphical User Interface
+        elif isinstance(self.ui, GUI):
             self.ui.display()
-
-            while True:
-                column = player.choose_column(self.board)
-                if not self.board.is_column_full(column):
-                    break
-                print(f"Column {column} is full. Please choose another column.")
-            self.board.place_piece(column, player.symbol)
-
-            # Win/draw checks
-            if self.board.check_win():
-                is_over = True
-                self.ui.display()
-                print(f"{player.name} wins!")
-            elif self.board.is_full():
-                is_over = True
-                self.ui.display()
-                print("It's a draw!")
-            else:
-                self.switch_player()
-
-    def switch_player(self):
-        self.current_player = 1 - self.current_player
 
     def choose_interface(self):
         while True:
-            choice = input("Choose an interface ('console' or 'gui'): ")
+            # choice = input("Choose an interface ('console' or 'gui'): ")
+            choice = 'gui'
             if choice.lower() == 'console':
-                self.ui = ConsoleInterface(self.board)
-                break
+                return ConsoleInterface(self.board)
             elif choice.lower() == 'gui':
-                self.ui = GUI(self.board)
+                return GUI(self.board)
             else:
                 print("Invalid input. Please enter 'console' or 'gui'.")
-
-    def choose_players(self):
-        while True:
-            choice = input("Choose your opponent ('human' or 'ai'): ")
-            if choice.lower() == 'human':
-                self.players = [HumanPlayer('Player 1', '1'), HumanPlayer('Player 2', '2')]
-                break
-            elif choice.lower() == 'ai':
-                self.players = [HumanPlayer('Player 1', '1'), AIPlayer('Player 2', '2')]
-                break
-            else:
-                print("Invalid input. Please enter 'human' or 'ai'.")
