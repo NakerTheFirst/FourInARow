@@ -12,9 +12,7 @@ class Board:
     @staticmethod
     def choose_players():
         while True:
-            # choice = input("Choose your opponent ('human' or 'ai'): ")
-            # Temporarily set choice to human in all cases for testing, delete line later
-            choice = 'human'
+            choice = input("Choose your opponent ('human' or 'ai'): ")
             if choice.lower() == 'human':
                 return [HumanPlayer('Player 1', '1'), HumanPlayer('Player 2', '2')]
             elif choice.lower() == 'ai':

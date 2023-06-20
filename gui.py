@@ -2,6 +2,7 @@ import tkinter as tk
 from abc import ABC
 from ui import UI
 
+# TODO: Add AI game mode
 # TODO: Add class diagram
 # TODO: Add docs
 # TODO: Update methods' and attributes' access specifiers
@@ -15,7 +16,7 @@ class GUI(UI, ABC):
         self.orb_columns = []
         self.orbs = []
         self.text = tk.StringVar()
-        self.text.set("Player 1, click a column to place your piece")
+        self.text.set(f"{self.board.players[self.board.current_player].name}, click a column to place your piece")
         self.textbox_frame = None
         self.text_info = None
 
@@ -74,7 +75,6 @@ class GUI(UI, ABC):
                         if self.board.grid[row][column] == "o":
                             self.board.grid[row][column] = self.board.players[self.board.current_player].symbol
                             self.change_orb_colour(column, row, self.get_orb_colour())
-                            self.change_textbox_colour()
 
                             if self.board.check_win():
                                 self.text.set(f"{self.board.players[self.board.current_player].name} wins!")
@@ -83,23 +83,22 @@ class GUI(UI, ABC):
                                 self.board.switch_player()
                                 self.update_textbox_text()
 
+                            self.change_textbox_colour()
                             break
+
         return _handle_click
 
     def change_orb_colour(self, column, row, colour):
         self.orb_columns[column].itemconfig(self.orbs[column][row], fill=colour)
 
     def change_textbox_colour(self):
-        colour = self.get_textbox_colour()
+        colour = self.get_orb_colour()
         if self.textbox_frame and self.text_info:
             self.textbox_frame.configure(bg=colour)
             self.text_info.configure(bg=colour)
 
     def get_orb_colour(self):
         return "#CD5334" if self.board.current_player else "#237373"
-
-    def get_textbox_colour(self):
-        return "#237373" if self.board.current_player else "#CD5334"
 
     def update_textbox_text(self):
         player_name = self.board.players[self.board.current_player].name

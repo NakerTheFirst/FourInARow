@@ -28,7 +28,7 @@ class Engine:
                     is_over = True
                     self.ui.display()
                     print(f"{player.name} wins!")
-                elif self.board.is_full():
+                elif self.board.is_board_full():
                     is_over = True
                     self.ui.display()
                     print("It's a draw!")
@@ -41,8 +41,7 @@ class Engine:
 
     def choose_interface(self):
         while True:
-            # choice = input("Choose an interface ('console' or 'gui'): ")
-            choice = 'gui'
+            choice = input("Choose an interface ('console' or 'gui'): ")
             if choice.lower() == 'console':
                 return ConsoleInterface(self.board)
             elif choice.lower() == 'gui':
